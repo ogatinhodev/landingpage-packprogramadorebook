@@ -298,9 +298,9 @@
   <footer class="pt-12 pb-8">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center text-slate-400">
       <div class="flex items-center justify-center gap-6 mb-4">
-        <a href="#" class="hover:text-white">Instagram</a>
-        <a href="#" class="hover:text-white">TikTok</a>
-        <a href="mailto:contato@gatinhodev.com" class="hover:text-white">Email</a>
+        <a href="https://www.instagram.com/j.o.dev/" target="_blank" class="hover:text-white">Instagram</a>
+        <a href="https://www.tiktok.com/@gatinhodev" target="_blank" class="hover:text-white">TikTok</a>
+        <a href="mailto:contato.gatinhodev@gmail.com" target="_blank" class="hover:text-white">Email</a>
       </div>
       <div class="text-sm">Criado por GatinhoDev — 2025</div>
     </div>
@@ -334,100 +334,6 @@
       }, { threshold: 0.12 });
 
       document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
-    })();
-
-    // Simple confetti (small implementation)
-    // We'll draw simple falling rectangles on canvas for a few hundred ms
-    (function() {
-      const canvas = document.getElementById('confetti-canvas');
-      const ctx = canvas.getContext('2d');
-      let particles = [];
-      let w = canvas.width = window.innerWidth;
-      let h = canvas.height = window.innerHeight;
-
-      window.addEventListener('resize', () => {
-        w = canvas.width = window.innerWidth;
-        h = canvas.height = window.innerHeight;
-      });
-
-      function spawnConfetti(x, y) {
-        particles = [];
-        const colors = ['#06b6d4','#8b5cf6','#fb923c','#34d399','#f472b6','#60a5fa'];
-        for(let i=0;i<80;i++){
-          particles.push({
-            x: x + (Math.random()-0.5)*120,
-            y: y + (Math.random()-0.5)*40,
-            vx: (Math.random()-0.5)*6,
-            vy: Math.random()* -6 - 2,
-            size: 6 + Math.random()*8,
-            color: colors[Math.floor(Math.random()*colors.length)],
-            rot: Math.random()*360,
-            rotSpeed: (Math.random()-0.5)*10,
-            life: 120 + Math.random()*40
-          });
-        }
-        requestAnimationFrame(step);
-      }
-
-      function step() {
-        ctx.clearRect(0,0,w,h);
-        for(let i=particles.length-1;i>=0;i--){
-          let p = particles[i];
-          p.vy += 0.25; // gravity
-          p.x += p.vx;
-          p.y += p.vy;
-          p.rot += p.rotSpeed;
-          p.life--;
-          ctx.save();
-          ctx.translate(p.x, p.y);
-          ctx.rotate(p.rot * Math.PI/180);
-          ctx.fillStyle = p.color;
-          ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size*0.6);
-          ctx.restore();
-          if(p.life < 0 || p.y > h+50) particles.splice(i,1);
-        }
-        if(particles.length>0) requestAnimationFrame(step);
-      }
-
-      // Expose a global function to trigger confetti at center/top
-      window.triggerConfetti = function() {
-        spawnConfetti(window.innerWidth/2, window.innerHeight/3);
-      };
-    })();
-
-    // Modal and buy button handling
-    (function() {
-      const buyBtn = document.getElementById('buyBtn');
-      const buyBtn2 = document.getElementById('buyBtn2');
-      const modal = document.getElementById('modal');
-      const closeModal = document.getElementById('closeModal');
-      const downloadLink = document.getElementById('downloadLink');
-
-      function openModal() {
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-        // small confetti
-        if(window.triggerConfetti) window.triggerConfetti();
-      }
-      function close() {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-      }
-
-      [buyBtn,buyBtn2].forEach(btn => {
-        if(btn) btn.addEventListener('click', (e) => {
-          e.preventDefault();
-          openModal();
-        });
-      });
-
-      if(closeModal) closeModal.addEventListener('click', close);
-      // download link - replace with your real file / checkout
-      if(downloadLink) downloadLink.addEventListener('click', (e) => {
-        // example: redirect to Kiwify/Gumroad checkout or direct file
-        // e.g., window.location.href = 'https://gumroad.com/l/seulink'
-        alert('Aqui você redirecionaria para o link de download/checkout.');
-      });
     })();
   </script>
 </body>
