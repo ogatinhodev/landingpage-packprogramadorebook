@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pack Comece na Programação — GatinhoDev</title>
+
+  <!-- Tailwind CDN (rápido para protótipo) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --glass-bg: rgba(255,255,255,0.06);
+      --glass-border: rgba(255,255,255,0.12);
+    }
+
+    html, body { height: 100%; }
+
+    /* Page background gradient (mobile-first) */
+    body {
+      font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg,#0f172a 0%, #111827 100%);
+      color: #e6eef8;
+      -webkit-font-smoothing:antialiased;
+    }
+
+    /* Hero parallax background (we'll move background-position via JS on scroll) */
+    .hero-bg {
+      background-image: linear-gradient(130deg, rgba(59,130,246,0.12), rgba(124,58,237,0.12)), url('');
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* glass card base */
+    .glass {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(8px);
+    }
+
+    /* subtle fade-in utility (used by JS) */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 650ms ease, transform 650ms ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* mockup style (3D-ish) */
+    .ebook-mockup {
+    ;
+      box-shadow: 0 24px 60px rgba(3,7,18,0.6);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    /* confetti canvas */
+    #confetti-canvas {
+      pointer-events: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 80;
+    }
+
+    /* small responsive tweaks for hero text */
+    @media (min-width: 768px) {
+      body { background: linear-gradient(180deg, #071233 0%, #0b1220 100%); }
+      .hero-bg { min-height: 80vh; }
+    }
+  </style>
+</head>
+<body class="antialiased">
+
+  <!-- CONFETTI CANVAS -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- HEADER -->
+  <header class="fixed inset-x-0 top-0 z-40">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="flex items-center justify-between py-4">
+        <div class="flex items-center gap-3">
+          <div class="text-white font-bold text-lg tracking-tight">
+            <span class="text-indigo-400">Gatinho</span>Dev
+          </div>
+          <div class="hidden md:block text-sm text-slate-300">Pack Comece na Programação</div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <a href="#o-que-recebe" class="hidden sm:inline text-slate-200 hover:text-white text-sm">O que vem</a>
+          <a href="#preview" class="hidden sm:inline text-slate-200 hover:text-white text-sm">Prévia</a>
+          <a id="buyTop" href="https://pay.kiwify.com.br/KpjMcuO" target="_blank" class="ml-2 inline-flex items-center px-4 py-2 rounded-full bg-indigo-500 hover:bg-indigo-600 text-white font-semibold text-sm shadow-lg">Comprar agora</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section id="home" class="hero-bg relative pt-20">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-16 md:py-24">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        <!-- Left: copy -->
+        <div class="text-center md:text-left">
+          <div class="inline-block glass px-3 py-1 rounded-full text-xs text-indigo-200 mb-4">Entrega automática • Acesso imediato • Arquivo seguro</div>
+          <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight text-white drop-shadow-md">Pack <span class="text-indigo-300">Comece na Programação</span></h1>
+          <p class="mt-4 text-slate-200 max-w-xl">Templates, projetos, guias e tudo que você precisa para dar os primeiros passos como desenvolvedor — sem enrolação, direto ao ponto.</p>
+
+          <div class="mt-8 flex flex-col sm:flex-row sm:items-center sm:gap-4 gap-4 justify-center md:justify-start">
+            <div>
+              <div class="text-2xl md:text-3xl font-bold text-white">R$14,99</div>
+              <div class="text-xs text-slate-300">Preço promocional de lançamento</div>
+            </div>
+
+            <div>
+             <a id="buyTop"
+   href="https://pay.kiwify.com.br/KpjMcuO"
+   target="_blank"
+   class="mt-6 inline-flex items-center px-12 py-4 rounded-full bg-indigo-500 hover:bg-indigo-600 text-white font-semibold text-lg shadow-lg">
+  Quero Adquirir Agora!
+</a>
+
+            </div>
+          </div>
+
+          <ul class="mt-6 text-sm text-slate-300 space-y-2">
+            <li>• Modelo de portfólio pronto (HTML/CSS)</li>
+            <li>• Template de currículo para dev</li>
+            <li>• Dicas de mini projetos para praticar</li>
+          </ul>
+        </div>
+
+        <!-- Right: ebook mockup -->
+        <div class="flex justify-center md:justify-end">
+          <div class="bg-gradient-to-tr from-indigo-700/30 to-violet-600/20 p-6 rounded-2xl glass shadow-2xl">
+            <img src="Captura de tela 2025-11-09 011446.png" alt="Mockup ebook" class="w-56 md:w-72 ebook-mockup">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION: WHAT YOU GET -->
+  <section id="o-que-recebe" class="pt-12 pb-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <h2 class="text-2xl font-bold text-white text-center">O que você vai receber</h2>
+      <p class="text-slate-300 text-center mt-3">Recursos práticos pensados para ajudar de verdade quem está começando.</p>
+
+      <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <!-- cards -->
+        <div class="glass p-6 rounded-xl fade-in">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 flex items-center justify-center rounded-lg bg-indigo-600/30 text-indigo-200">
+              <!-- icon (SVG) -->
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M8 17l4-4-4-4m5 8l4-4-4-4" /></svg>
+            </div>
+            <div>
+              <h3 class="font-semibold text-white">Modelo de portfólio</h3>
+              <p class="text-slate-300 text-sm mt-1">HTML e CSS prontos para personalizar e publicar.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass p-6 rounded-xl fade-in">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 flex items-center justify-center rounded-lg bg-indigo-600/30 text-indigo-200">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M12 8c1.657 0 3-1.567 3-3.5S13.657 1 12 1 9 2.567 9 4.5 10.343 8 12 8zM3 21c0-3.333 2.667-6 6-6s6 2.667 6 6" /></svg>
+            </div>
+            <div>
+              <h3 class="font-semibold text-white">Template de currículo</h3>
+              <p class="text-slate-300 text-sm mt-1">Modelo pronto para destacar projetos e habilidades.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass p-6 rounded-xl fade-in">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 flex items-center justify-center rounded-lg bg-indigo-600/30 text-indigo-200">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M2 12h20M12 2v20" /></svg>
+            </div>
+            <div>
+              <h3 class="font-semibold text-white">Modelo de README</h3>
+              <p class="text-slate-300 text-sm mt-1">Estrutura profissional para deixar seus projetos prontos no GitHub.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass p-6 rounded-xl fade-in">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 flex items-center justify-center rounded-lg bg-indigo-600/30 text-indigo-200">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M3 7h18M3 12h18M3 17h18" /></svg>
+            </div>
+            <div>
+              <h3 class="font-semibold text-white">Mini projetos</h3>
+              <p class="text-slate-300 text-sm mt-1">Dois projetos para praticar e adicionar no portfólio.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass p-6 rounded-xl fade-in">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 flex items-center justify-center rounded-lg bg-indigo-600/30 text-indigo-200">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M12 8v8M8 12h8" /></svg>
+            </div>
+            <div>
+              <h3 class="font-semibold text-white">Links úteis</h3>
+              <p class="text-slate-300 text-sm mt-1">Ferramentas, comunidades e jogos educativos recomendados.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass p-6 rounded-xl fade-in">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 flex items-center justify-center rounded-lg bg-indigo-600/30 text-indigo-200">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M5 13l4 4L19 7" /></svg>
+            </div>
+            <div>
+              <h3 class="font-semibold text-white">Checklist do iniciante</h3>
+              <p class="text-slate-300 text-sm mt-1">Passos práticos para aprender de forma consistente.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PREVIEW -->
+  <section id="preview" class="py-12">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <br><h2 class="text-2xl font-bold text-white text-center">Prévia do conteúdo</h2>
+      <p class="text-slate-300 text-center mt-2">Olhe algumas páginas e tópicos do e-book</p>
+
+      <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="glass rounded-xl p-4 fade-in">
+          <img src="portfolio-foto.png" alt="preview" class="w-full rounded-md mb-4">
+          <h4 class="text-white font-semibold">Exemplo de template</h4>
+          <p class="text-slate-300 text-sm mt-2">Um template de portfólio limpo e fácil de editar.</p>
+        </div>
+
+        <div class="glass rounded-xl p-4 fade-in">
+          <img src="mini-projetos.png" alt="preview" class="w-full rounded-md mb-4">
+          <h4 class="text-white font-semibold">Projeto comentado</h4>
+          <p class="text-slate-300 text-sm mt-2">Dicas de mini projeto com passo a passo para rodar e entender o código.</p>
+        </div>
+
+        <div class="glass rounded-xl p-4 fade-in">
+          <img src="htmlcssjs-ex.png" alt="preview" class="w-full rounded-md mb-4">
+          <h4 class="text-white font-semibold">Checklist e roadmap</h4>
+          <p class="text-slate-300 text-sm mt-2">Passo a passo pra você saber por onde começar.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHO IS IT FOR -->
+  <section id="quem" class="py-12 bg-gradient-to-b from-transparent to-black/10">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6">
+      <h3 class="text-xl font-bold text-white text-center">Para quem é este pack?</h3>
+      <ul class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4 text-slate-300">
+        <li class="glass p-4 rounded-lg fade-in">Iniciantes que querem um caminho claro</li>
+        <li class="glass p-4 rounded-lg fade-in">Quem não sabe por onde começar</li>
+        <li class="glass p-4 rounded-lg fade-in">Quem quer montar o primeiro portfólio</li>
+        <li class="glass p-4 rounded-lg fade-in">Quem precisa organizar o aprendizado</li>
+      </ul>
+    </div>
+  </section>
+
+  
+ 
+
+  <!-- CTA FINAL -->
+<section id="comprar" class="py-12">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+    <h2 class="text-3xl font-bold text-white">Pronto para começar sua jornada dev?</h2>
+
+    <a id="buyTop"
+       href="https://pay.kiwify.com.br/KpjMcuO"
+       target="_blank"
+       class="mt-6 inline-flex items-center px-10 py-2 rounded-full bg-indigo-500 hover:bg-indigo-600 text-white font-semibold text-sm shadow-lg">
+      Comprar agora
+    </a>
+
+  </div>
+</section>
+
+
+
+  <!-- FOOTER -->
+  <footer class="pt-12 pb-8">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center text-slate-400">
+      <div class="flex items-center justify-center gap-6 mb-4">
+        <a href="#" class="hover:text-white">Instagram</a>
+        <a href="#" class="hover:text-white">TikTok</a>
+        <a href="mailto:contato@gatinhodev.com" class="hover:text-white">Email</a>
+      </div>
+      <div class="text-sm">Criado por GatinhoDev — 2025</div>
+    </div>
+  </footer>
+
+ 
+
+  <!-- SCRIPTS -->
+  <script>
+    // Parallax hero background movement (subtle)
+    (function() {
+      const hero = document.querySelector('.hero-bg');
+      if (!hero) return;
+      window.addEventListener('scroll', () => {
+        const scrolled = window.scrollY;
+        // move background slightly for parallax effect
+        hero.style.backgroundPosition = `center ${40 - scrolled * 0.08}%`;
+      }, { passive: true });
+    })();
+
+    // Fade-in on scroll using IntersectionObserver
+    (function() {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if(entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            // unobserve to avoid repeated triggers
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12 });
+
+      document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
+    })();
+
+    // Simple confetti (small implementation)
+    // We'll draw simple falling rectangles on canvas for a few hundred ms
+    (function() {
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      let particles = [];
+      let w = canvas.width = window.innerWidth;
+      let h = canvas.height = window.innerHeight;
+
+      window.addEventListener('resize', () => {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+      });
+
+      function spawnConfetti(x, y) {
+        particles = [];
+        const colors = ['#06b6d4','#8b5cf6','#fb923c','#34d399','#f472b6','#60a5fa'];
+        for(let i=0;i<80;i++){
+          particles.push({
+            x: x + (Math.random()-0.5)*120,
+            y: y + (Math.random()-0.5)*40,
+            vx: (Math.random()-0.5)*6,
+            vy: Math.random()* -6 - 2,
+            size: 6 + Math.random()*8,
+            color: colors[Math.floor(Math.random()*colors.length)],
+            rot: Math.random()*360,
+            rotSpeed: (Math.random()-0.5)*10,
+            life: 120 + Math.random()*40
+          });
+        }
+        requestAnimationFrame(step);
+      }
+
+      function step() {
+        ctx.clearRect(0,0,w,h);
+        for(let i=particles.length-1;i>=0;i--){
+          let p = particles[i];
+          p.vy += 0.25; // gravity
+          p.x += p.vx;
+          p.y += p.vy;
+          p.rot += p.rotSpeed;
+          p.life--;
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rot * Math.PI/180);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size*0.6);
+          ctx.restore();
+          if(p.life < 0 || p.y > h+50) particles.splice(i,1);
+        }
+        if(particles.length>0) requestAnimationFrame(step);
+      }
+
+      // Expose a global function to trigger confetti at center/top
+      window.triggerConfetti = function() {
+        spawnConfetti(window.innerWidth/2, window.innerHeight/3);
+      };
+    })();
+
+    // Modal and buy button handling
+    (function() {
+      const buyBtn = document.getElementById('buyBtn');
+      const buyBtn2 = document.getElementById('buyBtn2');
+      const modal = document.getElementById('modal');
+      const closeModal = document.getElementById('closeModal');
+      const downloadLink = document.getElementById('downloadLink');
+
+      function openModal() {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        // small confetti
+        if(window.triggerConfetti) window.triggerConfetti();
+      }
+      function close() {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+
+      [buyBtn,buyBtn2].forEach(btn => {
+        if(btn) btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          openModal();
+        });
+      });
+
+      if(closeModal) closeModal.addEventListener('click', close);
+      // download link - replace with your real file / checkout
+      if(downloadLink) downloadLink.addEventListener('click', (e) => {
+        // example: redirect to Kiwify/Gumroad checkout or direct file
+        // e.g., window.location.href = 'https://gumroad.com/l/seulink'
+        alert('Aqui você redirecionaria para o link de download/checkout.');
+      });
+    })();
+  </script>
+</body>
+</html>
